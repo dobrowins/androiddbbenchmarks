@@ -7,8 +7,6 @@ import androidx.benchmark.junit4.measureRepeated
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.paperdb.Paper
-import junit.framework.Assert.assertTrue
-import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Rule
 import org.junit.Test
@@ -41,12 +39,12 @@ class PaperDbBenchmarking {
     @Test
     fun paperdbInsertReadTest() = benchmarkRule.measureRepeated {
         benchmarkRule.scope.runWithTimingDisabled {
+            if (Paper.book().allKeys.isEmpty()) throw RuntimeException()
             Paper.book().destroy()
             if (Paper.book().allKeys.isNotEmpty()) throw RuntimeException()
         }
         repository.store(persons, { list -> Paper.book().write(KEY_CONTACTS, list) })
         val persons = repository.read { Paper.book().read<List<Person>>(KEY_CONTACTS, emptyList()) }
     }
-
 
 }
