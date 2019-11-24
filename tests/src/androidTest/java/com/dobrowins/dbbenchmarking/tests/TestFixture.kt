@@ -10,7 +10,8 @@ object TestFixture {
 
     val realmPersons = generatePersonList<RealmPerson>(1000)
 
-    val roomPersons = generatePersonList<RoomPerson>(1000)
+    val roomPersons: List<RoomPerson>
+        get() = generatePersonList<RoomPerson>(1000)
 
     private inline fun <reified T : TestPerson> generatePersonList(size: Int): List<T> =
         List(size, { index -> generatePerson<T>(index + 1) })

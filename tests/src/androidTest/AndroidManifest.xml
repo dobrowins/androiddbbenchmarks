@@ -8,8 +8,8 @@
       In a com.android.library project, this flag must be disabled from this
       manifest, as it is not possible to override this flag from Gradle.
     -->
-<!--    <application-->
-<!--        android:debuggable="false"-->
-<!--        tools:ignore="HardcodedDebugMode"-->
-<!--        tools:replace="android:debuggable" />-->
+    <application
+        android:debuggable="false"
+        tools:ignore="HardcodedDebugMode"
+        tools:replace="android:debuggable" />
 </manifest>

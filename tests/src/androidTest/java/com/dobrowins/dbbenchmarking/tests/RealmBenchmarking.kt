@@ -7,12 +7,14 @@ import androidx.benchmark.junit4.measureRepeated
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.realm.Realm
-import org.junit.Before
+import org.junit.FixMethodOrder
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.junit.runners.MethodSorters
 
 @RunWith(AndroidJUnit4::class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class RealmBenchmarking {
 
     init {
@@ -22,14 +24,11 @@ class RealmBenchmarking {
     @get:Rule
     val benchmarkRule = BenchmarkRule()
 
-    private val persons by lazy { TestFixture.realmPersons }
-
-    @Before
-    fun purge() {
-        val realm = Realm.getDefaultInstance()
-        realm.beginTransaction()
-        realm.deleteAll()
-        realm.commitTransaction()
+    private val persons by lazy {
+        benchmarkRule.scope.runWithTimingDisabled { TestFixture.realmPersons }
+    }
+    private val repository by lazy {
+        benchmarkRule.scope.runWithTimingDisabled { RealmRepository() }
     }
 
     @Test
@@ -39,20 +38,17 @@ class RealmBenchmarking {
 
     @Test
     fun realmInsertReadTest() = benchmarkRule.measureRepeated {
-        val repository = RealmRepository()
+        val realm = benchmarkRule.scope.runWithTimingDisabled { Realm.getDefaultInstance() }
+        // fixme: clear realm right here
         repository.store(
             persons,
             { list ->
-                val realm = Realm.getDefaultInstance()
                 realm.beginTransaction()
-                realm.insert(list)
+                realm.insertOrUpdate(list)
                 realm.commitTransaction()
             }
         )
-        val persons = repository.read {
-            Realm.getDefaultInstance().where(RealmPerson::class.java).findAll()
-        }
-        assert(persons.all { it.name == TESTNAME })
+        val persons = repository.read { realm.where(RealmPerson::class.java).findAll() }
     }
 
 }

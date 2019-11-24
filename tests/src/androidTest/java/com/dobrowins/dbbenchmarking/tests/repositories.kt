@@ -3,6 +3,7 @@ package com.dobrowins.dbbenchmarking.tests
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -17,7 +18,7 @@ interface PersonsDao {
     @Query("SELECT * FROM roomperson")
     fun getAll(): List<RoomPerson>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(list: List<RoomPerson>)
 
     @Query("DELETE FROM roomperson")
