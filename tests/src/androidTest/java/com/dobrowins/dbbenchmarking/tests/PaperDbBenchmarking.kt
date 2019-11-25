@@ -39,7 +39,6 @@ class PaperDbBenchmarking {
     @Test
     fun paperdbInsertReadTest() = benchmarkRule.measureRepeated {
         benchmarkRule.scope.runWithTimingDisabled {
-            if (Paper.book().allKeys.isEmpty()) throw RuntimeException()
             Paper.book().destroy()
             if (Paper.book().allKeys.isNotEmpty()) throw RuntimeException()
         }

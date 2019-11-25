@@ -22,21 +22,8 @@ android {
 }
 
 dependencies {
-    def room_version = "2.2.2"
     implementation(
             fileTree(dir: 'libs', include: ['*.jar']),
             "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
-            'androidx.appcompat:appcompat:1.1.0',
-            'androidx.core:core-ktx:1.1.0',
-            'io.paperdb:paperdb:2.6',
-            'com.orhanobut:hawk:2.0.1',
-            "androidx.room:room-runtime:$room_version",
-    )
-    kapt "androidx.room:room-compiler:$room_version"
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation(
-            "androidx.test:runner:1.2.0",
-            'androidx.test.ext:junit:1.1.1',
-            "androidx.benchmark:benchmark-junit4:1.0.0",
     )
 }

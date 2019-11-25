@@ -7,6 +7,7 @@ import androidx.benchmark.junit4.measureRepeated
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.realm.Realm
+import io.realm.kotlin.delete
 import org.junit.FixMethodOrder
 import org.junit.Rule
 import org.junit.Test
@@ -39,7 +40,12 @@ class RealmBenchmarking {
     @Test
     fun realmInsertReadTest() = benchmarkRule.measureRepeated {
         val realm = benchmarkRule.scope.runWithTimingDisabled { Realm.getDefaultInstance() }
-        // fixme: clear realm right here
+        benchmarkRule.scope.runWithTimingDisabled {
+            realm.beginTransaction()
+            realm.delete<RealmPerson>()
+            if (realm.where(RealmPerson::class.java).findAll().isNotEmpty()) throw RuntimeException()
+            realm.commitTransaction()
+        }
         repository.store(
             persons,
             { list ->
